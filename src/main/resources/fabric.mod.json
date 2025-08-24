@@ -1,0 +1,37 @@
+{
+	"schemaVersion": 1,
+	"id": "bulk-farming",
+	"version": "${version}",
+	"name": "Bulk farming",
+	"description": "",
+	"authors": [
+		"ShinaPri"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/bulk-farming/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.shinapri.bulkfarming.BulkFarming"
+		],
+        "client": [
+            "com.shinapri.bulkfarming.Client.BulkFarmingClient"
+        ],
+        "modmenu": [
+            "com.shinapri.bulkfarming.Config.MenuEntry"
+        ]
+    },
+	"depends": {
+		"fabricloader": ">=0.17.2",
+		"minecraft": "~1.21.6",
+		"java": ">=21",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}
