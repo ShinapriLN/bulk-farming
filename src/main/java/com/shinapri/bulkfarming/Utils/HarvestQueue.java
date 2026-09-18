@@ -53,7 +53,7 @@ public final class HarvestQueue {
             BlockPos p = job.pos;
             if (!level.isLoaded(p)) continue;
             currentState = level.getBlockState(p.above());
-            // ตัวอย่างงาน: เก็บพืชบน FARMLAND เท่านั้น
+
             if (currentState.getBlock() instanceof CropBlock crop
                     && crop.isMaxAge(currentState)) {
                 if(collectToInv){
@@ -76,10 +76,15 @@ public final class HarvestQueue {
     }
 
     private static boolean canFitAll(Inventory inv, List<ItemStack> drops) {
-        // ใช้เฉพาะ 36 ช่องหลัก
-        final int n = Math.min(36, inv.getNonEquipmentItems().size());  // Inventory.items = main slots
+        //? if <=1.21.4 {
+        /*final int n = Math.min(36, inv.items.size());
+        ItemStack[] sim = new ItemStack[n];
+        for (int i = 0; i < n; i++) sim[i] = inv.items.get(i).copy();
+        *///?} else {
+        final int n = Math.min(36, inv.getNonEquipmentItems().size());
         ItemStack[] sim = new ItemStack[n];
         for (int i = 0; i < n; i++) sim[i] = inv.getNonEquipmentItems().get(i).copy();
+        //?}
 
         for (ItemStack d0 : drops) {
             if (d0.isEmpty()) continue;
@@ -109,7 +114,6 @@ public final class HarvestQueue {
         BlockState state = level.getBlockState(cropPos);
         if (state.isAir()) return HarvestResult.NO_CROP;
 
-// ต้องอยู่ฝั่งเซิร์ฟเวอร์ และใช้ LootParams ให้ครบ
         LootParams.Builder lp = new LootParams.Builder(level)
                 .withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(cropPos))
                 .withParameter(LootContextParams.TOOL, player.getMainHandItem())
@@ -117,7 +121,6 @@ public final class HarvestQueue {
                 .withParameter(LootContextParams.THIS_ENTITY, player)
                 .withOptionalParameter(LootContextParams.BLOCK_ENTITY, level.getBlockEntity(cropPos));
 
-// ⬇️ นี่แหละที่หมายถึง `drops`
         java.util.List<ItemStack> drops = state.getDrops(lp);
 
         if (!canFitAll(player.getInventory(), drops)) {
@@ -125,7 +128,6 @@ public final class HarvestQueue {
             return HarvestResult.INVENTORY_BLOCKED;  // ไม่ทำลายบล็อก
         }
 
-// ใส่ของให้ครบก่อน แล้วค่อยลบโดยไม่ดรอปลงพื้น
         for (ItemStack st : drops) player.getInventory().add(st);
         level.destroyBlock(cropPos, false);
         return HarvestResult.OK;

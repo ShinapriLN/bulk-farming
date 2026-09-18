@@ -40,28 +40,19 @@ public class BulkFarming implements ModInitializer {
                     server.execute(() -> {
                         var cfg = BulkFarmingConfigIO.get();
                         boolean collectToInv = cfg.collectInInventory;
-                        ServerLevel world = player.level(); // ✅ ServerLevelช
+                        ServerLevel world = (ServerLevel) player.level();
 
-                        Set<BlockPos> region = collectFarmland(world, startPos, 4096); // ใส่ limit กันหลุดโลก
+                        Set<BlockPos> region = collectFarmland(world, startPos, 4096); // ใส่ limit กันหลุดโลก :) but ไม่กันคนหลุดโลก
                         List<BlockPos> path  = orderSouthWestSerpentine(region);
 
                         if(action == Action.HARVEST){
                             HarvestQueue.enqueue(player, path);
                         }else if(action == Action.PLANT){
                             PlantQueue.enqueue(player, path);
-                            /*player.displayClientMessage(
-                                    Component.literal("PLANT!!"),
-                                    false
-                            );*/
                         }
-
-
-
-
                     });
                 }
         );
-
 	}
 
     // เก็บ farmland ที่ติดกันทั้งหมดในระดับ Y เดียวกับ start

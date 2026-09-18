@@ -3,13 +3,13 @@
 	"id": "bulk-farming",
 	"version": "${version}",
 	"name": "Bulk farming",
-	"description": "",
+	"description": "A lightweight QoL mod that lets you harvest and re-plant large farmland areas fast.",
 	"authors": [
-		"ShinaPri"
+		"Shinapri"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"homepage": "https://www.curseforge.com/minecraft/mc-mods/bulk-farming",
+		"sources": "https://github.com/ShinapriLN/bulk-farming"
 	},
 	"license": "CC0-1.0",
 	"icon": "assets/bulk-farming/icon.png",
@@ -27,11 +27,8 @@
     },
 	"depends": {
 		"fabricloader": ">=0.17.2",
-		"minecraft": "~1.21.6",
+        "minecraft": "${minecraft_dependency}",
 		"java": ">=21",
 		"fabric-api": "*"
-	},
-	"suggests": {
-		"another-mod": "*"
 	}
 }

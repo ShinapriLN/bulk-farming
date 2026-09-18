@@ -1,0 +1,58 @@
+name: publish-curseforge
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: GitHub release tag, e.g. v1.0.0
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+
+    strategy:
+      fail-fast: false
+      matrix:
+        mc:
+          - '1.21'
+          - '1.21.1'
+          - '1.21.2'
+          - '1.21.3'
+          - '1.21.4'
+          - '1.21.5'
+          - '1.21.6'
+          - '1.21.7'
+          - '1.21.8'
+          - '1.21.9'
+          - '1.21.10'
+          - '1.21.11'
+
+    steps:
+      - name: download jar from GitHub release
+        run: |
+          mkdir artifacts
+          gh release download "${{ inputs.release_tag }}" \
+            --repo "${{ github.repository }}" \
+            --pattern "bulk-farming-*+mc${{ matrix.mc }}.jar" \
+            --dir artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: publish to CurseForge
+        uses: Kira-NT/mc-publish@v3
+        with:
+          curseforge-id: 1333761
+          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
+
+          files: artifacts/bulk-farming-*+mc${{ matrix.mc }}.jar
+
+          loaders: fabric
+          game-versions: ${{ matrix.mc }}
+          version-type: release
+          name: Bulk Farming ${{ inputs.release_tag }} for Minecraft ${{ matrix.mc }}
+          version: ${{ inputs.release_tag }}

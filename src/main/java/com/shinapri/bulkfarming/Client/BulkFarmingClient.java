@@ -29,7 +29,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.ChatFormatting;
 import net.minecraft.world.InteractionResult;
 
-
+//? if <=1.21.10 {
+import net.minecraft.resources.ResourceLocation;
+//?} else {
+/*import net.minecraft.resources.Identifier;
+*///?}
 
 public class BulkFarmingClient implements ClientModInitializer {
     private static KeyMapping KEY_ACTIVE;
@@ -39,15 +43,29 @@ public class BulkFarmingClient implements ClientModInitializer {
     private boolean selectionMode = false;
 
     @Override public void onInitializeClient() {
+        //? if <=1.21.8 {
         KEY_ACTIVE = KeyBindingHelper.registerKeyBinding(new KeyMapping(
                 "Activate Bulk Farming Key",
                 GLFW.GLFW_KEY_LEFT_SHIFT,
                 "Bulk Farming"
         ));
-/*
-        UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
-            return selectionMode ? InteractionResult.FAIL : InteractionResult.PASS;
-        });*/
+        //?} elif <=1.21.10 {
+        /*KEY_ACTIVE = KeyBindingHelper.registerKeyBinding(new KeyMapping(
+                "Activate Bulk Farming Key",
+                GLFW.GLFW_KEY_LEFT_SHIFT,
+                KeyMapping.Category.register(
+                        ResourceLocation.fromNamespaceAndPath("bulk-farming", "bulk_farming")
+                )
+        ));
+        *///?} else {
+        /*KEY_ACTIVE = KeyBindingHelper.registerKeyBinding(new KeyMapping(
+                "Activate Bulk Farming Key",
+                GLFW.GLFW_KEY_LEFT_SHIFT,
+                KeyMapping.Category.register(
+                        Identifier.fromNamespaceAndPath("bulk-farming", "bulk_farming")
+                )
+        ));
+        *///?}
 
         AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) ->
                 selectionMode ? InteractionResult.FAIL : InteractionResult.PASS
@@ -56,13 +74,36 @@ public class BulkFarmingClient implements ClientModInitializer {
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (client == null || client.level == null || client.isPaused() || client.screen != null) return;
 
+            //? if <=1.21.8 {
             long window = client.getWindow().getWindow();
 
-            boolean shiftHeld = KEY_ACTIVE.isDown() || InputConstants.isKeyDown(window, GLFW.GLFW_KEY_LEFT_SHIFT);
-            selectionMode = shiftHeld;
+            boolean shiftHeld =
+                    KEY_ACTIVE.isDown()
+                            || InputConstants.isKeyDown(window, GLFW.GLFW_KEY_LEFT_SHIFT);
 
-            boolean lmb = GLFW.glfwGetMouseButton(window, GLFW.GLFW_MOUSE_BUTTON_LEFT) == GLFW.GLFW_PRESS;
-            boolean rmb = GLFW.glfwGetMouseButton(window, GLFW.GLFW_MOUSE_BUTTON_RIGHT) == GLFW.GLFW_PRESS;
+            boolean lmb =
+                    GLFW.glfwGetMouseButton(window, GLFW.GLFW_MOUSE_BUTTON_LEFT)
+                            == GLFW.GLFW_PRESS;
+
+            boolean rmb =
+                    GLFW.glfwGetMouseButton(window, GLFW.GLFW_MOUSE_BUTTON_RIGHT)
+                            == GLFW.GLFW_PRESS;
+            //?} else {
+            /*var window = client.getWindow();
+            long windowHandle = window.handle();
+
+            boolean shiftHeld =
+                    KEY_ACTIVE.isDown()
+                    || InputConstants.isKeyDown(window, GLFW.GLFW_KEY_LEFT_SHIFT);
+
+            boolean lmb =
+                    GLFW.glfwGetMouseButton(windowHandle, GLFW.GLFW_MOUSE_BUTTON_LEFT)
+                    == GLFW.GLFW_PRESS;
+
+            boolean rmb =
+                    GLFW.glfwGetMouseButton(windowHandle, GLFW.GLFW_MOUSE_BUTTON_RIGHT)
+                    == GLFW.GLFW_PRESS;
+            *///?}
 
             boolean leftMouseClick = lmb && !prevLmb;
             boolean rmbClicked = rmb && !prevRmb;
@@ -70,7 +111,11 @@ public class BulkFarmingClient implements ClientModInitializer {
             prevRmb = rmb;
 
             if (!(shiftHeld && (leftMouseClick || rmbClicked))) return;
+            //? if <=1.21.10 {
             long now = net.minecraft.Util.getMillis();
+            //?} else {
+            /*long now = net.minecraft.util.Util.getMillis();
+            *///?}
             if (now - lastClickMs < CLICK_COOLDOWN_MS) return;
             lastClickMs = now;
 
