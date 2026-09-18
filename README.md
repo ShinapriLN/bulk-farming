@@ -1,1 +1,1 @@
-# Bulk Farming (Fabric 1.21.6)
+# Bulk Farming (Fabric 1.21.x)
